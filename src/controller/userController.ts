@@ -86,9 +86,9 @@ const AutoLogin = expressAsyncHandler(
       throw new Error("Token not found");
     }
     const decode = jwt.verify(token, process.env.JWT_SECRET!) as {
-      id: Schema.Types.ObjectId;
+      _id: Schema.Types.ObjectId;
     };
-    const user: userSchemaTypes | null = await User.findById(decode.id).select(
+    const user: userSchemaTypes | null = await User.findById(decode._id).select(
       "fullName profilePic username"
     );
     if (!user) {
