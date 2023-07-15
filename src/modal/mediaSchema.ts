@@ -3,7 +3,10 @@ import { mediaSchemaTypes } from "../types/media";
 
 const mediaSchema = new Schema<mediaSchemaTypes>(
   {
-    id: String,
+    id: {
+      type: String,
+      required: [true, "Id is required"],
+    },
     original_title: String,
     name: String,
     title: String,
@@ -13,6 +16,10 @@ const mediaSchema = new Schema<mediaSchemaTypes>(
     release_date: String,
     first_air_date: String,
     vote_average: String,
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );

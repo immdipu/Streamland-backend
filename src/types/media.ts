@@ -1,3 +1,5 @@
+import { Schema } from "mongoose";
+
 export interface mediaSchemaTypes {
   id: string;
   backdrop_path?: string;
@@ -9,4 +11,5 @@ export interface mediaSchemaTypes {
   release_date: string;
   first_air_date?: string;
   vote_average: number;
+  user: Schema.Types.ObjectId;
 }

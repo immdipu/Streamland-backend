@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./server";
 import errorHandler from "./utils/errorHandler";
 import userRoutes from "./routes/userRoute";
+import mediaRoutes from "./routes/mediaRoute";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/user", userRoutes);
+app.use("/media", mediaRoutes);
 
 const port = process.env.PORT || 3000;
 
