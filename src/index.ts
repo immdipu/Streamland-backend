@@ -1,4 +1,4 @@
-import express, { NextFunction } from "express";
+import express, { NextFunction, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./server";
@@ -11,6 +11,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 if (process.env.NODE_ENV === "development") {
   app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -25,7 +26,7 @@ if (process.env.NODE_ENV === "development") {
     next();
   });
 } else if (process.env.NODE_ENV === "production") {
-  app.use((req, res, next) => {
+  app.use((req, res: Response, next: NextFunction) => {
     res.setHeader("Access-Control-Allow-Origin", "https://cinemaa.vercel.app");
     res.setHeader(
       "Access-Control-Allow-Methods",
