@@ -49,6 +49,7 @@ const Signup = expressAsyncHandler(
 const Login = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { username, email, password } = req.body;
+
     if (!username && !email) {
       res.status(400);
       throw new Error("username or email is required");
@@ -63,6 +64,10 @@ const Login = expressAsyncHandler(
     if (!userExist) {
       res.status(404);
       throw new Error("user not found");
+    }
+    if (userExist.loggedInWithGoogle) {
+      res.status(405);
+      throw new Error("You are already logged in via Google with this email");
     }
     if (req.body.password !== userExist.password) {
       res.status(401);
@@ -80,17 +85,18 @@ const Login = expressAsyncHandler(
 
 const AutoLogin = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const headers = req.headers["authorization"];
-    const token = headers?.split(" ")[1];
-    4;
+    const heade = req.headers["authorization"];
+    const token = heade?.split(" ")[1];
+
     if (!token) {
       res.status(401);
       throw new Error("Token not found");
     }
+
     const decode = jwt.verify(token, process.env.JWT_SECRET!) as {
-      _id: Schema.Types.ObjectId;
+      id: Schema.Types.ObjectId;
     };
-    const user: userSchemaTypes | null = await User.findById(decode._id).select(
+    const user: userSchemaTypes | null = await User.findById(decode.id).select(
       "fullName profilePic username"
     );
     if (!user) {
