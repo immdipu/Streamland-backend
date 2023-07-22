@@ -39,10 +39,6 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
-app.options("*", function (req, res) {
-  res.sendStatus(200);
-});
-
 app.use("/user", userRoutes);
 app.use("/media", mediaRoutes);
 
