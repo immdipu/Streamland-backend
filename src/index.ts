@@ -13,6 +13,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.options("*", function (req, res) {
+  res.sendStatus(200);
+});
+
 if (process.env.NODE_ENV === "development") {
   app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "https://cinemaa.vercel.app");
