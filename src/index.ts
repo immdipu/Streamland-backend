@@ -6,13 +6,17 @@ import errorHandler from "./utils/errorHandler";
 import userRoutes from "./routes/userRoute";
 import mediaRoutes from "./routes/mediaRoute";
 
+let corOptions = {
+  origin: "https://cinemaa.vercel.app",
+};
+
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors(corOptions));
 
 app.use("/user", userRoutes);
 app.use("/media", mediaRoutes);
