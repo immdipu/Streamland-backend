@@ -16,7 +16,7 @@ app.use(cors());
 app.use("/user", userRoutes);
 app.use("/media", mediaRoutes);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.use(errorHandler);
 

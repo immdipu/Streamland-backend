@@ -4,6 +4,8 @@ import expressAsyncHandler from "express-async-handler";
 import User from "../modal/userSchema";
 import jwt from "jsonwebtoken";
 import { userSchemaTypes } from "../types/user";
+import jwt_decode from "jwt-decode";
+import { googlePayloadTypes } from "../types/user";
 
 const jwtToken = (id: mongoose.Types.ObjectId) => {
   return jwt.sign({ id }, process.env.JWT_SECRET!, {
@@ -99,4 +101,62 @@ const AutoLogin = expressAsyncHandler(
   }
 );
 
-export { Signup, AutoLogin, Login };
+const googleLogin = expressAsyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.body.token;
+    console.log(token);
+    if (!token) {
+      res.status(400);
+      throw new Error("No token found");
+    }
+    const payload: googlePayloadTypes = jwt_decode(token);
+    console.log(payload);
+    const { email_verified, email, name, picture } = payload;
+    const user = await User.findOne({ email: email });
+    if (user) {
+      if (!user.loggedInWithGoogle) {
+        user.loggedInWithGoogle = true;
+        user.profilePic = picture;
+        user.email_verified = email_verified;
+        await user.save();
+        res.status(200).json({
+          _id: user._id,
+          fullName: user.fullName,
+          username: user.username,
+          profilePic: user.profilePic,
+          token: jwtToken(user._id),
+        });
+      }
+      if (user.loggedInWithGoogle) {
+        res.status(200).json({
+          _id: user._id,
+          fullName: user.fullName,
+          username: user.username,
+          profilePic: user.profilePic,
+          token: jwtToken(user._id),
+        });
+      }
+    }
+    if (!user) {
+      const newuser = await User.create({
+        fullName: name,
+        email: email,
+        email_verified: email_verified,
+        profilePic: picture,
+        username: email.split("@")[0],
+        loggedInWithGoogle: true,
+      });
+      if (newuser) {
+        res.status(200).json({
+          _id: newuser._id,
+          fullName: newuser.fullName,
+          username: newuser.username,
+          profilePic: newuser.profilePic,
+          token: jwtToken(newuser._id),
+        });
+      }
+    }
+  }
+);
+
+export { Signup, AutoLogin, Login, googleLogin };
