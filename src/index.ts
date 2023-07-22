@@ -9,12 +9,12 @@ import mediaRoutes from "./routes/mediaRoute";
 dotenv.config();
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 var corsOptions = {
   origin: "https://cinemaa.vercel.app",
 };
 app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/user", userRoutes);
 app.use("/media", mediaRoutes);
