@@ -5,15 +5,11 @@ import {
   Login,
   googleLogin,
 } from "../controller/userController";
-import cors from "cors";
-var corsOptions = {
-  origin: "https://cinemaa.vercel.app",
-};
 
 const router = Router();
 
-router.post("/signup", cors(corsOptions), Signup);
-router.get("/login", cors(corsOptions), AutoLogin);
+router.post("/signup", Signup);
+router.get("/login", AutoLogin);
 router.post("/login", Login);
 router.post("/googlelogin", googleLogin);
 
