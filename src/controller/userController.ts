@@ -104,7 +104,6 @@ const AutoLogin = expressAsyncHandler(
 const googleLogin = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const token = req.body.token;
-    console.log(token);
     if (!token) {
       res.status(400);
       throw new Error("No token found");
