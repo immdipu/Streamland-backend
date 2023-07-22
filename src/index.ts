@@ -30,7 +30,10 @@ if (process.env.NODE_ENV === "development") {
       "Access-Control-Allow-Methods",
       "GET, POST, PUT, DELETE, PATCH"
     );
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    );
 
     next();
   });
