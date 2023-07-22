@@ -1,6 +1,6 @@
 import express, { NextFunction, Response } from "express";
 import dotenv from "dotenv";
-import cors from "cors";
+
 import connectDB from "./server";
 import errorHandler from "./utils/errorHandler";
 import userRoutes from "./routes/userRoute";
@@ -9,14 +9,9 @@ import mediaRoutes from "./routes/mediaRoute";
 dotenv.config();
 
 const app = express();
-var corsOptions = {
-  origin: "https://cinemaa.vercel.app",
-};
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(cors(corsOptions));
 
 app.use("/user", userRoutes);
 app.use("/media", mediaRoutes);
