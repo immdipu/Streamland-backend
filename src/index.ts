@@ -12,10 +12,11 @@ const app = express();
 var corsOptions = {
   origin: "https://cinemaa.vercel.app",
 };
-app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors(corsOptions));
 
 app.use("/user", userRoutes);
 app.use("/media", mediaRoutes);
