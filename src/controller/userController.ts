@@ -115,7 +115,7 @@ const googleLogin = expressAsyncHandler(
       throw new Error("No token found");
     }
     const payload: googlePayloadTypes = jwt_decode(token);
-    console.log(payload);
+
     const { email_verified, email, name, picture } = payload;
     const user = await User.findOne({ email: email });
     if (user) {

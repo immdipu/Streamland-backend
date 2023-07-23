@@ -18,19 +18,18 @@ export const TokenVerify = expressAsyncHandler(
       throw new Error("token not found, UnAuthorized!");
     }
     const decode = jwt.verify(token, process.env.JWT_SECRET!) as {
-      _id: Schema.Types.ObjectId;
+      id: Schema.Types.ObjectId;
     };
 
-    const user: userSchemaTypes | null = await User.findById(decode._id);
+    const user: userSchemaTypes | null = await User.findById(decode.id);
+    console.log(decode);
     if (!user) {
       res.status(401);
       throw new Error("token invalid Login Again");
     }
     if (user) {
-      req.currentUserId = decode._id as any;
+      req.currentUserId = decode.id as any;
       next();
     }
-    res.status(400);
-    throw new Error("unAuthorized");
   }
 );
