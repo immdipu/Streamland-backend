@@ -40,6 +40,7 @@ const AddMedia = expressAsyncHandler(
       name,
       title,
       backdrop_path,
+      poster_path,
       media_type,
       release_date,
       first_air_date,
