@@ -28,7 +28,7 @@ const AddMedia = expressAsyncHandler(
         { media_type: media_type },
       ],
     });
-    console.log(alreadyExist);
+
     if (alreadyExist) {
       res.status(404);
       throw new Error("Already added to watchlist");
