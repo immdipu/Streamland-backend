@@ -21,7 +21,7 @@ export const TokenVerify = expressAsyncHandler(
       id: Schema.Types.ObjectId;
     };
     const user: userSchemaTypes | null = await User.findById(decode.id);
-    console.log(decode);
+
     if (!user) {
       res.status(401);
       throw new Error("token invalid Login Again");

@@ -7,7 +7,8 @@ import userRoutes from "./routes/userRoute";
 import mediaRoutes from "./routes/mediaRoute";
 
 let corOptions = {
-  origin: "https://cinemaa.vercel.app",
+  // origin: "https://cinemaa.vercel.app",
+  origin: "*",
 };
 
 dotenv.config();
@@ -21,7 +22,7 @@ app.use(cors(corOptions));
 app.use("/user", userRoutes);
 app.use("/media", mediaRoutes);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.use(errorHandler);
 
