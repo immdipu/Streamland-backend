@@ -58,13 +58,13 @@ const AddMedia = expressAsyncHandler(
 
 const RemoveMedia = expressAsyncHandler(
   async (req: IRequest, res: Response, next: NextFunction) => {
-    const MediaId = req.body.id;
+    const MediaId = req.params.id;
     const media = await Media.findById(MediaId);
     if (!media) {
       res.status(404);
       throw new Error("Media not found");
     }
-    if (media.user !== req.currentUserId) {
+    if (media.user.toString() !== req.currentUserId!.toString()) {
       res.status(401);
       throw new Error("Not Authorized");
     }
@@ -73,4 +73,11 @@ const RemoveMedia = expressAsyncHandler(
   }
 );
 
-export { AddMedia, RemoveMedia };
+const GetMedia = expressAsyncHandler(
+  async (req: IRequest, res: Response, next: NextFunction) => {
+    const medias = await Media.find({ user: req.currentUserId });
+    res.status(200).json(medias);
+  }
+);
+
+export { AddMedia, RemoveMedia, GetMedia };
