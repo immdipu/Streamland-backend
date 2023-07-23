@@ -21,6 +21,17 @@ const AddMedia = expressAsyncHandler(
       res.status(400);
       throw new Error("some fields are missing");
     }
+    const alreadyExist = await Media.find({
+      $and: [
+        { id: id },
+        { user: req.currentUserId },
+        { media_type: media_type },
+      ],
+    });
+    if (alreadyExist) {
+      res.status(404);
+      throw new Error("Already added to watchlist");
+    }
     const media = await Media.create({
       id,
       original_title,

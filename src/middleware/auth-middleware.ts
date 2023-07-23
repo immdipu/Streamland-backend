@@ -20,7 +20,6 @@ export const TokenVerify = expressAsyncHandler(
     const decode = jwt.verify(token, process.env.JWT_SECRET!) as {
       id: Schema.Types.ObjectId;
     };
-
     const user: userSchemaTypes | null = await User.findById(decode.id);
     console.log(decode);
     if (!user) {
