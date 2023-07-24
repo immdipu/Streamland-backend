@@ -7,7 +7,7 @@ import userRoutes from "./routes/userRoute";
 import mediaRoutes from "./routes/mediaRoute";
 
 let corOptions = {
-  origin: "https://cinemaa.vercel.app",
+  origin: "https://www.showmania.xyz",
   // origin: "*",
 };
 
