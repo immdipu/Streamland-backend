@@ -5,9 +5,9 @@ import Feedback from "../modal/feedbackSchema";
 const AddFeedback = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, message, user } = req.body;
-    if (!name || !message) {
+    if (!message) {
       res.status(400);
-      throw new Error("some fields are missing");
+      throw new Error("message is required");
     }
     const feedback = await Feedback.create({
       name,
