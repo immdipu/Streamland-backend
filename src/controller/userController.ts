@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { userSchemaTypes } from "../types/user";
 import jwt_decode from "jwt-decode";
 import { googlePayloadTypes } from "../types/user";
+import { IRequest } from "../middleware/auth-middleware";
 
 const jwtToken = (id: mongoose.Types.ObjectId) => {
   return jwt.sign({ id }, process.env.JWT_SECRET!, {
@@ -164,4 +165,30 @@ const googleLogin = expressAsyncHandler(
   }
 );
 
-export { Signup, AutoLogin, Login, googleLogin };
+const AddRemoveFollower = expressAsyncHandler(
+  async (req: IRequest, res: Response, next: NextFunction) => {
+    const myId = req.currentUserId;
+    const userId: unknown = req.params.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.json("User not found");
+    }
+    const myUser = await User.findById(myId);
+    const alreadyFollow = myUser?.following.includes(
+      userId as Schema.Types.ObjectId
+    );
+
+    const option = alreadyFollow ? "$pull" : "$addToSet";
+    await User.findByIdAndUpdate(
+      myId,
+      {
+        [option]: { following: userId },
+      },
+      { new: true }
+    );
+    await User.findByIdAndUpdate(userId, { [option]: { followers: myId } });
+    res.status(200).json("Follow updated");
+  }
+);
+
+export { Signup, AutoLogin, Login, googleLogin, AddRemoveFollower };

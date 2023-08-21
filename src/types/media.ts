@@ -11,5 +11,6 @@ export interface mediaSchemaTypes {
   release_date: string;
   first_air_date?: string;
   vote_average: number;
+  public: false;
   user: Schema.Types.ObjectId;
 }

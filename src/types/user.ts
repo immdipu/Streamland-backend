@@ -1,3 +1,5 @@
+import { ObjectId, Schema } from "mongoose";
+
 export interface userSchemaTypes {
   fullName: string;
   email: string;
@@ -6,6 +8,25 @@ export interface userSchemaTypes {
   profilePic: string;
   email_verified: boolean;
   loggedInWithGoogle: boolean;
+  favouriteGenre:
+    | "Action"
+    | "Adventure"
+    | "Animation"
+    | "Comedy"
+    | "Crime"
+    | "Documentary"
+    | "Drama"
+    | "Fantasy"
+    | "Drama"
+    | "Horror"
+    | "Mystery"
+    | "Romance"
+    | "Science Fiction"
+    | "Thriller"
+    | "War";
+
+  followers: Schema.Types.ObjectId[];
+  following: Schema.Types.ObjectId[];
 }
 
 export interface googlePayloadTypes {

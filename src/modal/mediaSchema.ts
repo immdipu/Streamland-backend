@@ -13,6 +13,10 @@ const mediaSchema = new Schema<mediaSchemaTypes>(
     backdrop_path: String,
     poster_path: String,
     media_type: String,
+    public: {
+      type: Boolean,
+      default: false,
+    },
     release_date: String,
     first_air_date: String,
     vote_average: String,

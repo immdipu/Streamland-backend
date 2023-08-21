@@ -37,6 +37,9 @@ const userSchema = new Schema<userSchemaTypes>(
       type: Boolean,
       default: false,
     },
+    favouriteGenre: [String],
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,
