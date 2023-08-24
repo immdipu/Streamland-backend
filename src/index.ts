@@ -5,6 +5,7 @@ import connectDB from "./server";
 import errorHandler from "./utils/errorHandler";
 import userRoutes from "./routes/userRoute";
 import mediaRoutes from "./routes/mediaRoute";
+import MyTelegrambot from "./controller/notificationController";
 
 let corOptions = {
   origin: "https://www.showmania.xyz",
@@ -25,6 +26,9 @@ app.use("/media", mediaRoutes);
 const port = process.env.PORT || 3000;
 
 app.use(errorHandler);
+
+const token: string = process.env.TELEGRAM_BOT_TOKEN!;
+const mybot = new MyTelegrambot(token);
 
 connectDB()
   .then(() => {
