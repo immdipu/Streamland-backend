@@ -5,6 +5,7 @@ import connectDB from "./server";
 import errorHandler from "./utils/errorHandler";
 import userRoutes from "./routes/userRoute";
 import mediaRoutes from "./routes/mediaRoute";
+import TelegramBot, { Message } from "node-telegram-bot-api";
 import MyTelegrambot from "./controller/notificationController";
 
 let corOptions = {
@@ -28,11 +29,22 @@ const port = process.env.PORT || 3000;
 app.use(errorHandler);
 
 const token: string = process.env.TELEGRAM_BOT_TOKEN!;
-const mybot = new MyTelegrambot(token);
+// const bot = new TelegramBot(token);
+const BASEURL = process.env.BASE_URL;
+
+const bot = new MyTelegrambot(token, BASEURL!);
+
+// bot.setWebHook(`${BASEURL}/bot${token}`);
+
+// app.post(`/bot${token}`, (req, res) => {
+//   const data = bot.processUpdate(req.body);
+//   console.log(data);
+// });
 
 connectDB()
   .then(() => {
     app.listen(port, () => {
+      bot.AnyMessage();
       console.log("Server listening on port " + port);
     });
   })

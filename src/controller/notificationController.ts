@@ -6,9 +6,13 @@ import axios from "axios";
 class MyTelegrambot {
   public bot: TelegramBot;
   public application_id: string;
-
-  constructor(token: string) {
-    this.bot = new TelegramBot(token, { polling: true });
+  constructor(token: string, baseurl: string) {
+    this.bot = new TelegramBot(token, {
+      webHook: {
+        port: 3000,
+      },
+    });
+    this.bot.setWebHook(`${baseurl}/bot${token}`);
     this.application_id = process.env.APPLICATION_ID!;
     this.AnyMessage();
   }
@@ -60,7 +64,7 @@ class MyTelegrambot {
     }
   }
 
-  private AnyMessage(): any {
+  AnyMessage(): any {
     this.bot.on("message", async (msg: Message) => {
       const chatId = msg.chat.id;
 
