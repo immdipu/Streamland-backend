@@ -9,7 +9,7 @@ class MyTelegrambot {
   constructor(token: string, baseurl: string) {
     this.bot = new TelegramBot(token, {
       webHook: {
-        port: 3000,
+        port: 4000,
       },
     });
     this.bot.setWebHook(`${baseurl}/bot${token}`);
