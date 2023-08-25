@@ -4,17 +4,15 @@ import { NextFunction, Request, Response } from "express";
 import axios from "axios";
 
 class MyTelegrambot {
+  public chatId: number;
+  public message: Message;
   public bot: TelegramBot;
   public application_id: string;
-  constructor(token: string, baseurl: string) {
-    this.bot = new TelegramBot(token, {
-      webHook: {
-        port: 4000,
-      },
-    });
-    this.bot.setWebHook(`${baseurl}/bot${token}`);
+  constructor(message: Message, bot: TelegramBot) {
+    this.message = message;
+    this.chatId = this.message.chat.id;
+    this.bot = bot;
     this.application_id = process.env.APPLICATION_ID!;
-    this.AnyMessage();
   }
 
   private async addNotification(text: string): Promise<boolean> {
@@ -64,99 +62,100 @@ class MyTelegrambot {
     }
   }
 
-  AnyMessage(): any {
-    this.bot.on("message", async (msg: Message) => {
-      const chatId = msg.chat.id;
+  async AnyMessag(): Promise<any> {
+    const chatId = this.message.chat.id;
+    const options = {
+      reply_markup: {
+        force_reply: true,
+      },
+    };
 
-      const options = {
-        reply_markup: {
-          force_reply: true,
-        },
-      };
+    // Start command
 
-      // Start command
+    if (this.message.text === "/start") {
+      return this.bot.sendMessage(
+        chatId,
+        `Hello ${this.message.from?.first_name}`
+      );
+    }
 
-      if (msg.text === "/start") {
-        return this.bot.sendMessage(chatId, `Hello ${msg.from?.first_name}`);
-      }
+    // Add notification
 
-      // Add notification
-
-      if (msg.text === "/send_notification") {
-        if (msg.from?.username !== "immdipu") {
-          return this.bot.sendMessage(
-            chatId,
-            "You are not authorized to add notification"
-          );
-        }
+    if (this.message.text === "/send_notification") {
+      if (this.message.from?.username !== "immdipu") {
         return this.bot.sendMessage(
           chatId,
-          "Write the notification you want to send",
-          options
+          "You are not authorized to add notification"
+        );
+      }
+      return this.bot.sendMessage(
+        chatId,
+        "Write the notification you want to send",
+        options
+      );
+    }
+
+    if (
+      this.message.reply_to_message?.chat.username === "immdipu" &&
+      this.message.reply_to_message.text ===
+        "Write the notification you want to send"
+    ) {
+      if (!this.message.text || this.message.text == "") {
+        return this.bot.sendMessage(chatId, "No message provided");
+      }
+
+      const success = await this.addNotification(this.message.text);
+      if (success) {
+        return this.bot.sendMessage(
+          chatId,
+          `Notication added successfully. You can check here https://www.showmania.xyz`
+        );
+      }
+      if (!success) {
+        return this.bot.sendMessage(chatId, "Failed to add the notification");
+      }
+    }
+
+    // Delete Notification
+
+    if (this.message.text === "/delete") {
+      if (this.message.from?.username !== "immdipu") {
+        return this.bot.sendMessage(
+          chatId,
+          "You are not authorized to add notification"
         );
       }
 
-      if (
-        msg.reply_to_message?.chat.username === "immdipu" &&
-        msg.reply_to_message.text === "Write the notification you want to send"
-      ) {
-        if (!msg.text || msg.text == "") {
-          return this.bot.sendMessage(chatId, "No message provided");
-        }
-
-        const success = await this.addNotification(msg.text);
-        if (success) {
-          return this.bot.sendMessage(
-            chatId,
-            `Notication added successfully. You can check here https://www.showmania.xyz`
-          );
-        }
-        if (!success) {
-          return this.bot.sendMessage(chatId, "Failed to add the notification");
-        }
+      const success = await this.ClearNotifications();
+      if (success) {
+        return this.bot.sendMessage(chatId, "All notification deleted");
+      } else {
+        return this.bot.sendMessage(chatId, "Failed to delete notifications");
       }
+    }
 
-      // Delete Notification
+    //show all notifications
 
-      if (msg.text === "/delete") {
-        if (msg.from?.username !== "immdipu") {
-          return this.bot.sendMessage(
-            chatId,
-            "You are not authorized to add notification"
-          );
-        }
-
-        const success = await this.ClearNotifications();
-        if (success) {
-          return this.bot.sendMessage(chatId, "All notification deleted");
-        } else {
-          return this.bot.sendMessage(chatId, "Failed to delete notifications");
-        }
+    if (this.message.text === "/show_all_notification") {
+      if (this.message.from?.username !== "immdipu") {
+        return this.bot.sendMessage(
+          chatId,
+          "You are not authorized to add notification"
+        );
       }
-
-      //show all notifications
-
-      if (msg.text === "/show_all_notification") {
-        if (msg.from?.username !== "immdipu") {
-          return this.bot.sendMessage(
-            chatId,
-            "You are not authorized to add notification"
-          );
-        }
-        const allNotfication = await this.getAllNotification();
-        if (allNotfication) {
-          return this.bot.sendMessage(chatId, allNotfication.toString());
-        }
+      const allNotfication = await this.getAllNotification();
+      if (allNotfication) {
+        return this.bot.sendMessage(chatId, allNotfication.toString());
       }
+    }
 
-      // AI reply
-      if (!msg.text || msg.text.trim() == "") {
-        return this.bot.sendMessage(chatId, "No text provided");
-      }
+    // AI reply
+    if (!this.message.text || this.message.text.trim() == "") {
+      return this.bot.sendMessage(chatId, "No text provided");
+    }
 
-      const reply = await this.getReply(msg.text!);
-      this.bot.sendMessage(chatId, reply);
-    });
+    const reply = await this.getReply(this.message.text!);
+    this.bot.sendMessage(chatId, reply);
   }
 }
 

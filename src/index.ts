@@ -29,22 +29,36 @@ const port = process.env.PORT || 3000;
 app.use(errorHandler);
 
 const token: string = process.env.TELEGRAM_BOT_TOKEN!;
-// const bot = new TelegramBot(token);
+const options = {
+  webHook: {
+    port: 443,
+  },
+};
+const bot = new TelegramBot(token, options);
 const BASEURL = process.env.BASE_URL;
+bot.setWebHook(`${BASEURL}/bot${token}`);
 
-const bot = new MyTelegrambot(token, BASEURL!);
-
-// bot.setWebHook(`${BASEURL}/bot${token}`);
-
-// app.post(`/bot${token}`, (req, res) => {
-//   const data = bot.processUpdate(req.body);
-//   console.log(data);
-// });
+app.post(`/bot${token}`, (req, res) => {
+  const message: Message = req.body.message;
+  if (message) {
+    const myBot = new MyTelegrambot(message, bot);
+    myBot
+      .AnyMessag()
+      .then(() => {
+        res.status(200).send("Message sent successfully");
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+        res.status(500).send("Error sending message");
+      });
+  } else {
+    res.status(200).send("No message received");
+  }
+});
 
 connectDB()
   .then(() => {
     app.listen(port, () => {
-      bot.AnyMessage();
       console.log("Server listening on port " + port);
     });
   })
