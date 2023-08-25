@@ -24,14 +24,16 @@ app.use(cors(corOptions));
 app.use("/user", userRoutes);
 app.use("/media", mediaRoutes);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT! || 3000;
+
+const TELEGRAM_PORT = Number(process.env.TELEGRAM_PORT!) || 3001;
 
 app.use(errorHandler);
 
 const token: string = process.env.TELEGRAM_BOT_TOKEN!;
 const options = {
   webHook: {
-    port: 443,
+    port: TELEGRAM_PORT,
   },
 };
 const bot = new TelegramBot(token, options);
