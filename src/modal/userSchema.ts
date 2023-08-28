@@ -27,7 +27,7 @@ const userSchema = new Schema<userSchemaTypes>(
     },
     profilePic: {
       type: String,
-      default: "https://i5.extraimage.xyz/pix/2023/07/03/u6FQgX.jpg",
+      default: "https://i.imgur.com/phEO72D.png",
     },
     loggedInWithGoogle: {
       type: Boolean,
