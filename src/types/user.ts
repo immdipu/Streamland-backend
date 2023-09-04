@@ -8,25 +8,15 @@ export interface userSchemaTypes {
   profilePic: string;
   email_verified: boolean;
   loggedInWithGoogle: boolean;
-  favouriteGenre:
-    | "Action"
-    | "Adventure"
-    | "Animation"
-    | "Comedy"
-    | "Crime"
-    | "Documentary"
-    | "Drama"
-    | "Fantasy"
-    | "Drama"
-    | "Horror"
-    | "Mystery"
-    | "Romance"
-    | "Science Fiction"
-    | "Thriller"
-    | "War";
-
+  genre: string[];
   followers: Schema.Types.ObjectId[];
   following: Schema.Types.ObjectId[];
+  bio: string;
+  facebook: string;
+  twitter: string;
+  instagram: string;
+  github: string;
+  role: "admin" | "user";
 }
 
 export interface googlePayloadTypes {

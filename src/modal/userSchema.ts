@@ -14,6 +14,10 @@ const userSchema = new Schema<userSchemaTypes>(
       lowercase: true,
       required: [true, "Username is required"],
     },
+    role: {
+      type: String,
+      default: "user",
+    },
     email: {
       type: String,
       trim: true,
@@ -37,9 +41,14 @@ const userSchema = new Schema<userSchemaTypes>(
       type: Boolean,
       default: false,
     },
-    favouriteGenre: [String],
+    genre: [String],
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    facebook: String,
+    twitter: String,
+    instagram: String,
+    github: String,
+    bio: String,
   },
   {
     timestamps: true,

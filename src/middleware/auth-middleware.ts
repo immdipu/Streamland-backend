@@ -7,6 +7,7 @@ import { userSchemaTypes } from "../types/user";
 
 export interface IRequest extends Request {
   currentUserId?: Schema.Types.ObjectId;
+  username?: string;
 }
 
 export const TokenVerify = expressAsyncHandler(
@@ -28,6 +29,7 @@ export const TokenVerify = expressAsyncHandler(
     }
     if (user) {
       req.currentUserId = decode.id as any;
+      req.username = user.username as string;
       next();
     }
   }

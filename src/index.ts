@@ -8,14 +8,14 @@ import mediaRoutes from "./routes/mediaRoute";
 import TelegramBot, { Message } from "node-telegram-bot-api";
 import MyTelegrambot from "./controller/notificationController";
 
-let corOptions = {
-  origin: "https://www.showmania.xyz",
-  // origin: "*",
-};
-
 dotenv.config();
 
 const app = express();
+
+let corOptions = {
+  origin:
+    process.env.NODE_ENV === "production" ? "https://www.showmania.xyz" : "*",
+};
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

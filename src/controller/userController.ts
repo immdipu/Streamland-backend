@@ -173,6 +173,11 @@ const AddRemoveFollower = expressAsyncHandler(
     if (!user) {
       res.json("User not found");
     }
+
+    if (userId === myId) {
+      throw new Error("You can't follow yourself");
+    }
+
     const myUser = await User.findById(myId);
     const alreadyFollow = myUser?.following.includes(
       userId as Schema.Types.ObjectId
@@ -191,4 +196,113 @@ const AddRemoveFollower = expressAsyncHandler(
   }
 );
 
-export { Signup, AutoLogin, Login, googleLogin, AddRemoveFollower };
+const getUser = expressAsyncHandler(
+  async (req: IRequest, res: Response, next: NextFunction) => {
+    const reqUsername = req.params.username;
+    const currentUser = req.username;
+
+    let slectedFields =
+      "createdAt fullName profilePic username bio followers following genre email_verified facebook twitter instagram github ";
+
+    let ownProfile = false;
+    let isFollowing = false;
+
+    if (reqUsername === currentUser) {
+      slectedFields += "email";
+      ownProfile = true;
+    }
+
+    const user = await User.findOne({
+      username: reqUsername,
+    }).select(slectedFields);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (!ownProfile) {
+      const id: unknown = user._id;
+      isFollowing = await User.findOne({ username: currentUser })
+        .select("following")
+        .then((data) => {
+          return data?.following.includes(id as Schema.Types.ObjectId)!;
+        });
+    }
+    const mewuser = user.toObject();
+    res.status(200).json({ ...mewuser, ownProfile, isFollowing });
+  }
+);
+
+const editProfile = expressAsyncHandler(
+  async (req: IRequest, res: Response, next: NextFunction) => {
+    const {
+      fullName,
+      username,
+      bio,
+      genre,
+      facebook,
+      twitter,
+      instagram,
+      github,
+    } = req.body;
+
+    const currenUser = req.currentUserId;
+    const user = await User.findById(currenUser);
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    const userExist = await User.findOne({ username: username });
+    if (userExist && userExist._id.toString() !== currenUser!.toString()) {
+      res.status(403);
+      throw new Error("Username already taken");
+    }
+    let genreArray: string[] = [];
+    const updateFields: any = {};
+    if (fullName !== undefined) {
+      updateFields.fullName = fullName;
+    }
+    if (username !== undefined) {
+      updateFields.username = username.toLowerCase();
+    }
+    if (bio !== undefined) {
+      updateFields.bio = bio;
+    }
+    if (genre !== undefined) {
+      if (genre.length <= 0) {
+        updateFields.genre = genreArray;
+      } else {
+        const genrestring = genre.map(
+          (item: { label: string; value: string }) => item.label
+        );
+        updateFields.genre = genrestring;
+      }
+    }
+    if (facebook !== undefined) {
+      updateFields.facebook = facebook;
+    }
+    if (twitter !== undefined) {
+      updateFields.twitter = twitter;
+    }
+    if (instagram !== undefined) {
+      updateFields.instagram = instagram;
+    }
+    if (github !== undefined) {
+      updateFields.github = github;
+    }
+    Object.assign(user, updateFields);
+    await user.save();
+    res.status(200).json("Profile updated");
+  }
+);
+
+export {
+  Signup,
+  AutoLogin,
+  Login,
+  googleLogin,
+  AddRemoveFollower,
+  getUser,
+  editProfile,
+};
