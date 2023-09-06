@@ -8,6 +8,11 @@ import jwt_decode from "jwt-decode";
 import { googlePayloadTypes } from "../types/user";
 import { IRequest } from "../middleware/auth-middleware";
 
+function isUsernameValid(username: string): boolean {
+  const pattern = /^[a-zA-Z0-9]+$/;
+  return pattern.test(username);
+}
+
 const jwtToken = (id: mongoose.Types.ObjectId) => {
   return jwt.sign({ id }, process.env.JWT_SECRET!, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -21,6 +26,7 @@ const Signup = expressAsyncHandler(
       res.status(400);
       throw new Error("some fields are missing");
     }
+
     const AlreadyExist = await User.findOne({
       $or: [{ email: req.body.email }, { username: req.body.username }],
     });
@@ -28,6 +34,33 @@ const Signup = expressAsyncHandler(
       res.status(403);
       throw new Error("user already exist with the email or username");
     }
+
+    const isValid = isUsernameValid(username);
+    if (username.length > 15) {
+      res.status(400);
+      throw new Error("Username cannot be more than 15 characters");
+    }
+    if (username.length <= 2) {
+      res.status(400);
+      throw new Error("Username cannot be less than 3 characters");
+    }
+    if (username === "admin") {
+      res.status(400);
+      throw new Error("Username cannot be admin");
+    }
+    if (username === "Admin") {
+      res.status(400);
+      throw new Error("Username cannot be Admin");
+    }
+    if (username === "ADMIN") {
+      res.status(400);
+      throw new Error("Username cannot be ADMIN");
+    }
+    if (!isValid) {
+      res.status(400);
+      throw new Error("Username cannot contain special characters");
+    }
+
     const newUser = await User.create({
       fullName: req.body.fullName,
       email: req.body.email.trim(),
@@ -39,7 +72,7 @@ const Signup = expressAsyncHandler(
       res.status(200).json({
         _id: newUser._id,
         fullName: newUser.fullName,
-        username: newUser.email,
+        username: newUser.username,
         profilePic: newUser.profilePic,
         token: jwtToken(newUser._id),
       });
@@ -149,7 +182,7 @@ const googleLogin = expressAsyncHandler(
         email: email,
         email_verified: email_verified,
         profilePic: picture,
-        username: email.split("@")[0],
+        username: email.split("@")[0].replace(/\./g, ""),
         loggedInWithGoogle: true,
       });
       if (newuser) {
