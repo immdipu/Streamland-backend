@@ -131,7 +131,7 @@ const AutoLogin = expressAsyncHandler(
       id: Schema.Types.ObjectId;
     };
     const user: userSchemaTypes | null = await User.findById(decode.id).select(
-      "fullName profilePic username"
+      "fullName profilePic username role"
     );
     if (!user) {
       res.status(401);
@@ -240,8 +240,11 @@ const getUser = expressAsyncHandler(
     let ownProfile = false;
     let isFollowing = false;
 
-    if (reqUsername === currentUser) {
+    if (reqUsername === currentUser || req.currentUserRole === "admin") {
       slectedFields += "email";
+    }
+
+    if (reqUsername === currentUser) {
       ownProfile = true;
     }
 
@@ -277,10 +280,14 @@ const editProfile = expressAsyncHandler(
       twitter,
       instagram,
       github,
+      _id,
     } = req.body;
 
     const currenUser = req.currentUserId;
-    const user = await User.findById(currenUser);
+    const currentUserRole = req.currentUserRole;
+    const user = await User.findById(
+      currentUserRole === "admin" ? _id : currenUser
+    );
     if (!user) {
       res.status(404);
       throw new Error("User not found");
@@ -291,6 +298,7 @@ const editProfile = expressAsyncHandler(
       res.status(403);
       throw new Error("Username already taken");
     }
+
     let genreArray: string[] = [];
     const updateFields: any = {};
     if (fullName !== undefined) {

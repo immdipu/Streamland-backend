@@ -5,8 +5,6 @@ import connectDB from "./server";
 import errorHandler from "./utils/errorHandler";
 import userRoutes from "./routes/userRoute";
 import mediaRoutes from "./routes/mediaRoute";
-import TelegramBot, { Message } from "node-telegram-bot-api";
-import MyTelegrambot from "./controller/notificationController";
 
 dotenv.config();
 
