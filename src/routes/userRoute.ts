@@ -7,6 +7,7 @@ import {
   AddRemoveFollower,
   getUser,
   editProfile,
+  getAllUsers,
 } from "../controller/userController";
 import { TokenVerify } from "../middleware/auth-middleware";
 
@@ -19,5 +20,6 @@ router.get("/:username", TokenVerify, getUser);
 router.post("/googlelogin", googleLogin);
 router.get("/follow/:id", TokenVerify, AddRemoveFollower);
 router.post("/editprofile", TokenVerify, editProfile);
+router.get("/", TokenVerify, getAllUsers);
 
 export default router;

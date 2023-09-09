@@ -338,6 +338,59 @@ const editProfile = expressAsyncHandler(
   }
 );
 
+const getAllUsers = expressAsyncHandler(
+  async (req: IRequest, res: Response, next: NextFunction) => {
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+    const field = "_id username fullName profilePic role createdAt";
+    const sortQuery = req.query.sort;
+    const currentUserId = req.currentUserId;
+
+    try {
+      let users = await User.find().skip(skip).limit(limit).select(field);
+
+      if (sortQuery === "newest") {
+        users = await User.find()
+          .skip(skip)
+          .limit(limit)
+          .select(field)
+          .sort({ createdAt: -1 });
+      }
+
+      const followingUsers = await User.find({
+        _id: currentUserId,
+      }).select("following  createdAt");
+      const following = followingUsers[0].following;
+
+      const usersWithFollow = users.map((user) => {
+        const isFollowing = following.includes(
+          user._id as unknown as Schema.Types.ObjectId
+        );
+        return {
+          ...user.toObject(),
+          isFollowing: isFollowing,
+        };
+      });
+
+      if (usersWithFollow.length > 0) {
+        res.status(200).json({
+          page: page,
+          results: usersWithFollow.length,
+          data: usersWithFollow,
+        });
+      } else {
+        res.status(404).json({
+          message: "No users found",
+        });
+      }
+    } catch (error) {
+      res.status(500);
+      throw new Error("something went wrong");
+    }
+  }
+);
+
 export {
   Signup,
   AutoLogin,
@@ -346,4 +399,5 @@ export {
   AddRemoveFollower,
   getUser,
   editProfile,
+  getAllUsers,
 };
