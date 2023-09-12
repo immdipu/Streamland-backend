@@ -5,6 +5,8 @@ import connectDB from "./server";
 import errorHandler from "./utils/errorHandler";
 import userRoutes from "./routes/userRoute";
 import mediaRoutes from "./routes/mediaRoute";
+import chatRoutes from "./routes/chatRoutes";
+import messageRoutes from "./routes/messageRoutes";
 
 dotenv.config();
 
@@ -21,6 +23,8 @@ app.use(cors(corOptions));
 
 app.use("/user", userRoutes);
 app.use("/media", mediaRoutes);
+app.use("/chat", chatRoutes);
+app.use("/message", messageRoutes);
 
 const port = process.env.PORT! || 3000;
 
