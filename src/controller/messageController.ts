@@ -56,7 +56,7 @@ const getAllMessages = expressAsyncHandler(
     const userInChat = chat.users.find((user) => user == currentUserId);
 
     if (!userInChat) {
-      res.status(404);
+      res.status(401);
       throw new Error("You are not not authorized to view this chat");
     }
 

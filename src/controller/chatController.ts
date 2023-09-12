@@ -15,7 +15,7 @@ const accessCreateSingleChat = expressAsyncHandler(
       .populate("latestMessage");
 
     if (alreadyChat) {
-      res.status(200).json({ alreadyChat });
+      res.status(200).json(alreadyChat);
     } else {
       const newChat = await Chat.create({
         isGroupChat: false,
@@ -26,7 +26,7 @@ const accessCreateSingleChat = expressAsyncHandler(
         "users",
         "name profilePic _id username"
       );
-      res.status(200).json({ newChatPopulated });
+      res.status(200).json(newChatPopulated);
     }
   }
 );
