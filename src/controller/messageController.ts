@@ -18,10 +18,16 @@ const sendMessage = expressAsyncHandler(
       chat: chatId,
     });
 
-    const messageWithSender = await message.populate(
-      "sender",
-      "name profilePic _id username"
-    );
+    const messageWithSender = await message.populate([
+      {
+        path: "sender",
+        select: "name profilePic _id username fullName",
+      },
+      {
+        path: "chat",
+        select: "chatName isGroupChat users groupAdmin",
+      },
+    ]);
 
     await Chat.findOneAndUpdate(
       {
