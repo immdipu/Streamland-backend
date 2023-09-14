@@ -63,64 +63,64 @@ app.use(errorHandler);
 //   }
 // });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log("Server listening on port " + port);
 });
 
-// const io = new Server(server, {
-//   cors: {
-//     origin:
-//       process.env.NODE_ENV === "production" ? "https://www.showmania.xyz" : "*",
-//   },
-// });
+const io = new Server(server, {
+  cors: {
+    origin:
+      process.env.NODE_ENV === "production" ? "https://www.showmania.xyz" : "*",
+  },
+});
 
-// const connectedUsers = new Set();
-// const rooms = new Set();
+const connectedUsers = new Set();
+const rooms = new Set();
 
-// io.on("connection", (socket) => {
-//   console.log("Socket connected: " + socket.id);
-//   socket.on("disconnect", () => {
-//     console.log("Socket disconnected: " + socket.id);
-//   });
+io.on("connection", (socket) => {
+  console.log("Socket connected: " + socket.id);
+  socket.on("disconnect", () => {
+    console.log("Socket disconnected: " + socket.id);
+  });
 
-//   connectedUsers.add(socket.id);
+  connectedUsers.add(socket.id);
 
-//   socket.on("disconnect", () => {
-//     connectedUsers.delete(socket.id);
-//     if (rooms.has(socket.id)) rooms.delete(socket.id);
-//     console.log("User disconnected: " + socket.id);
-//   });
+  socket.on("disconnect", () => {
+    connectedUsers.delete(socket.id);
+    if (rooms.has(socket.id)) rooms.delete(socket.id);
+    console.log("User disconnected: " + socket.id);
+  });
 
-//   socket.on("setup", (userData) => {
-//     socket.join(userData.id);
-//     rooms.add(userData.id);
-//     console.log("User joined room: " + userData.id);
-//   });
+  socket.on("setup", (userData) => {
+    socket.join(userData.id);
+    rooms.add(userData.id);
+    console.log("User joined room: " + userData.id);
+  });
 
-//   socket.on("joinRoom", (room) => {
-//     socket.join(room);
-//     console.log("User joined chat: " + room);
-//   });
+  socket.on("joinRoom", (room) => {
+    socket.join(room);
+    console.log("User joined chat: " + room);
+  });
 
-//   socket.on("leaveRoom", (room) => {
-//     socket.leave(room);
-//     console.log("User left chat: " + room);
-//   });
+  socket.on("leaveRoom", (room) => {
+    socket.leave(room);
+    console.log("User left chat: " + room);
+  });
 
-//   socket.on("typing", (room) => {
-//     socket.to(room).emit("Usertyping", room);
-//   });
+  socket.on("typing", (room) => {
+    socket.to(room).emit("Usertyping", room);
+  });
 
-//   socket.on("stop typing", (room) => {
-//     socket.to(room).emit("userStopTyping", room);
-//   });
+  socket.on("stop typing", (room) => {
+    socket.to(room).emit("userStopTyping", room);
+  });
 
-//   socket.on("new message", (message: MessageReceivedTypes) => {
-//     const chat = message.chat;
-//     if (!chat.users) return;
-//     chat.users.forEach((user) => {
-//       if (user === message.sender._id) return;
-//       socket.in(user).emit("message received", message);
-//     });
-//   });
-// });
+  socket.on("new message", (message: MessageReceivedTypes) => {
+    const chat = message.chat;
+    if (!chat.users) return;
+    chat.users.forEach((user) => {
+      if (user === message.sender._id) return;
+      socket.in(user).emit("message received", message);
+    });
+  });
+});
