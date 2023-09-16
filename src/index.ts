@@ -74,27 +74,35 @@ const io = new Server(server, {
   },
 });
 
-const connectedUsers = new Set();
 const rooms = new Set();
+const usersSocketMap = new Set();
+const onlineUsers = new Set();
 
 io.on("connection", (socket) => {
   console.log("Socket connected: " + socket.id);
-  socket.on("disconnect", () => {
-    console.log("Socket disconnected: " + socket.id);
-  });
-
-  connectedUsers.add(socket.id);
 
   socket.on("disconnect", () => {
-    connectedUsers.delete(socket.id);
-    if (rooms.has(socket.id)) rooms.delete(socket.id);
-    console.log("User disconnected: " + socket.id);
+    const disconnectedUser: any = Array.from(onlineUsers).find(
+      (user: any) => user.socketId === socket.id
+    );
+    if (disconnectedUser) {
+      onlineUsers.delete(disconnectedUser);
+      socket.broadcast.emit("offlineUser", disconnectedUser);
+    }
   });
 
-  socket.on("setup", (userData) => {
-    socket.join(userData.id);
-    rooms.add(userData.id);
-    console.log("User joined room: " + userData.id);
+  socket.on("login", (user) => {
+    socket.emit("AllOnlineUsers", Array.from(onlineUsers));
+    let newUser = {
+      _id: user.id,
+      username: user.username,
+      fullName: user.fullName,
+      profilePic: user.profilePic,
+      role: user.role,
+      socketId: socket.id,
+    };
+    onlineUsers.add(newUser);
+    socket.broadcast.emit("onlineUser", newUser);
   });
 
   socket.on("joinRoom", (room) => {
