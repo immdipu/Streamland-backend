@@ -93,6 +93,8 @@ io.on("connection", (socket) => {
 
   socket.on("login", (user) => {
     socket.emit("AllOnlineUsers", Array.from(onlineUsers));
+    socket.join(user.id);
+    console.log("User joined: " + user.id);
     let newUser = {
       _id: user.id,
       username: user.username,
@@ -105,9 +107,9 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("onlineUser", newUser);
   });
 
-  socket.on("joinRoom", (room) => {
-    socket.join(room);
-    console.log("User joined chat: " + room);
+  socket.on("joinAConversation", (chatId) => {
+    socket.join(chatId);
+    console.log("User joined chat: " + chatId);
   });
 
   socket.on("leaveRoom", (room) => {
