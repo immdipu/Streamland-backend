@@ -17,6 +17,11 @@ const chatSchema = new Schema<chatSchemaTypes>(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    numberOfUsersAllowed: {
+      type: Number,
+      default: 10,
+      max: 100,
+    },
   },
   {
     timestamps: true,

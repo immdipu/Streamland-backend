@@ -6,4 +6,5 @@ export interface chatSchemaTypes {
   users: Schema.Types.ObjectId[];
   latestMessage: Schema.Types.ObjectId;
   groupAdmin: Schema.Types.ObjectId;
+  numberOfUsersAllowed: number;
 }
