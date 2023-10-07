@@ -391,6 +391,48 @@ const getAllUsers = expressAsyncHandler(
   }
 );
 
+const getAllFollowers = expressAsyncHandler(
+  async (req: IRequest, res: Response) => {
+    const userId = req.params.id;
+    const currentUserId = req.currentUserId;
+    const user = await User.findOne({ _id: userId })
+      .select("followers following _id")
+      .populate("followers following", "fullName profilePic username role ");
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    const currentUser = await User.findOne({ _id: currentUserId });
+
+    const newFollowersData = user.followers.map((item: any) => {
+      const isFollowing = currentUser?.following.includes(item._id.toString());
+      const isAFollower = currentUser?.followers.includes(item._id.toString());
+      return {
+        ...item.toObject(),
+        isFollowing: isFollowing,
+        isAFollower: isAFollower,
+      };
+    });
+
+    const newFollowingData = user.following.map((item: any) => {
+      const isFollowing = currentUser?.following.includes(item._id.toString());
+      const isAFollower = currentUser?.followers.includes(item._id.toString());
+      return {
+        ...item.toObject(),
+        isFollowing: isFollowing,
+        isAFollower: isAFollower,
+      };
+    });
+
+    res.status(200).json({
+      followers: newFollowersData,
+      following: newFollowingData,
+    });
+  }
+);
+
 export {
   Signup,
   AutoLogin,
@@ -400,4 +442,5 @@ export {
   getUser,
   editProfile,
   getAllUsers,
+  getAllFollowers,
 };
