@@ -13,4 +13,5 @@ export interface mediaSchemaTypes {
   vote_average: number;
   public: false;
   user: Schema.Types.ObjectId;
+  type: "history" | "watchlist";
 }

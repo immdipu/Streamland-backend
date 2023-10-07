@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { AddMedia, RemoveMedia, GetMedia } from "../controller/mediaController";
+import {
+  AddMedia,
+  RemoveMedia,
+  GetMedia,
+  AddMediaToHistory,
+} from "../controller/mediaController";
 import { TokenVerify } from "../middleware/auth-middleware";
 import { AddFeedback } from "../controller/feedbackController";
 import {
@@ -15,5 +20,6 @@ router.delete("/:id", TokenVerify, RemoveMedia);
 router.post("/feedback", AddFeedback);
 router.get("/notification", sendAllNotification);
 router.post("/notification", TokenVerify, AddNotification);
+router.post("/history", TokenVerify, AddMediaToHistory);
 
 export default router;

@@ -17,6 +17,10 @@ const mediaSchema = new Schema<mediaSchemaTypes>(
       type: Boolean,
       default: false,
     },
+    type: {
+      type: String,
+      enum: ["history", "watchlist"],
+    },
     release_date: String,
     first_air_date: String,
     vote_average: String,
