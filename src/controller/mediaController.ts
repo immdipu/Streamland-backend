@@ -145,11 +145,11 @@ const GetMedia = expressAsyncHandler(
     const history = await Media.find({
       user: req.currentUserId,
       type: "history",
-    });
+    }).sort({ createdAt: -1 });
     const watchlist = await Media.find({
       user: req.currentUserId,
       type: "watchlist",
-    });
+    }).sort({ createdAt: -1 });
     res.status(200).json({ history, watchlist });
   }
 );
