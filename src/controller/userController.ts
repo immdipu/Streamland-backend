@@ -95,6 +95,7 @@ const Login = expressAsyncHandler(
     const userExist = await User.findOne({
       $or: [{ username }, { email }],
     }).select("+password");
+
     if (!userExist) {
       res.status(404);
       throw new Error("user not found");
@@ -433,6 +434,32 @@ const getAllFollowers = expressAsyncHandler(
   }
 );
 
+const loginAsUser = expressAsyncHandler(
+  async (req: IRequest, res: Response) => {
+    const userId = req.params.id;
+    const currentUserRole = req.currentUserRole;
+
+    if (currentUserRole !== "admin") {
+      res.status(403);
+      throw new Error("You are not authorized to perform this action");
+    }
+
+    const user = await User.findById(userId).select(
+      "fullName profilePic username role"
+    );
+
+    const token = jwtToken(user?._id!);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+    res.status(200).json({
+      token: token,
+    });
+  }
+);
+
 export {
   Signup,
   AutoLogin,
@@ -443,4 +470,5 @@ export {
   editProfile,
   getAllUsers,
   getAllFollowers,
+  loginAsUser,
 };
