@@ -133,4 +133,8 @@ io.on("connection", (socket) => {
       socket.in(user).emit("message received", message);
     });
   });
+
+  socket.on("NewNotification", (data) => {
+    io.emit("NewNotificationReceived", data);
+  });
 });
