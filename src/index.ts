@@ -31,37 +31,7 @@ app.use("/message", messageRoutes);
 
 const port = process.env.PORT! || 3000;
 
-// const TELEGRAM_PORT = Number(process.env.TELEGRAM_PORT!) || 3001;
-
 app.use(errorHandler);
-
-// const token: string = process.env.TELEGRAM_BOT_TOKEN!;
-// const options = {
-//   webHook: {
-//     port: TELEGRAM_PORT,
-//   },
-// };
-// const bot = new TelegramBot(token, options);
-// const BASEURL = process.env.BASE_URL;
-// bot.setWebHook(`${BASEURL}/bot${token}`);
-
-// app.post(`/bot${token}`, (req, res) => {
-//   const message: Message = req.body.message;
-//   if (message) {
-//     const myBot = new MyTelegrambot(message, bot);
-//     myBot
-//       .AnyMessag()
-//       .then(() => {
-//         res.status(200).send("Message sent successfully");
-//       })
-//       .catch((error) => {
-//         console.error("Error sending message:", error);
-//         res.status(500).send("Error sending message");
-//       });
-//   } else {
-//     res.status(200).send("No message received");
-//   }
-// });
 
 const server = app.listen(port, () => {
   console.log("Server listening on port " + port);
