@@ -460,6 +460,33 @@ const loginAsUser = expressAsyncHandler(
   }
 );
 
+const SearchUsers = expressAsyncHandler(
+  async (req: IRequest, res: Response, next: NextFunction) => {
+    const searchTerm = req.query.q;
+    const currentUserRole = req.currentUserRole;
+
+    if (currentUserRole !== "admin") {
+      res.status(403);
+      throw new Error("You are not authorized to perform this action");
+    }
+
+    if (!searchTerm) {
+      res.status(400);
+      throw new Error("Search term is required");
+    }
+    const regex = new RegExp(searchTerm as string, "i");
+    const users = await User.find({
+      $or: [{ fullName: regex }, { username: regex }],
+    }).select("_id username fullName profilePic role createdAt");
+    if (users.length > 0) {
+      res.status(200).json(users);
+    } else {
+      res.status(404);
+      throw new Error("No users found");
+    }
+  }
+);
+
 export {
   Signup,
   AutoLogin,
@@ -471,4 +498,5 @@ export {
   getAllUsers,
   getAllFollowers,
   loginAsUser,
+  SearchUsers,
 };
