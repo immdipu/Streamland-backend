@@ -7,6 +7,7 @@ import { userSchemaTypes } from "../types/user";
 import jwt_decode from "jwt-decode";
 import { googlePayloadTypes } from "../types/user";
 import { IRequest } from "../middleware/auth-middleware";
+import Survey from "../modal/survey";
 
 function isUsernameValid(username: string): boolean {
   const pattern = /^[a-zA-Z0-9]+$/;
@@ -487,6 +488,27 @@ const SearchUsers = expressAsyncHandler(
   }
 );
 
+const AddSurvey = expressAsyncHandler(async (req: Request, res: Response) => {
+  const { name, source, otherSource, rating, feedback } = req.body;
+  const survey = await Survey.create({
+    name,
+    source,
+    otherSource,
+    rating,
+    feedback,
+  });
+
+  if (!survey) {
+    res.status(400);
+    throw new Error("Survey not created");
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Survey submitted successfully",
+  });
+});
+
 export {
   Signup,
   AutoLogin,
@@ -499,4 +521,5 @@ export {
   getAllFollowers,
   loginAsUser,
   SearchUsers,
+  AddSurvey,
 };

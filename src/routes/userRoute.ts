@@ -10,6 +10,7 @@ import {
   getAllUsers,
   getAllFollowers,
   loginAsUser,
+  AddSurvey,
   SearchUsers,
 } from "../controller/userController";
 import { TokenVerify } from "../middleware/auth-middleware";
@@ -27,5 +28,6 @@ router.get("/", TokenVerify, getAllUsers);
 router.get("/followers/:id", TokenVerify, getAllFollowers);
 router.get("/loginas/:id", TokenVerify, loginAsUser);
 router.get("/search/term", TokenVerify, SearchUsers);
+router.post("/survey", AddSurvey);
 
 export default router;
