@@ -4,6 +4,7 @@ import {
   RemoveMedia,
   GetMedia,
   AddMediaToHistory,
+  SearchVideos,
 } from "../controller/mediaController";
 import { TokenVerify } from "../middleware/auth-middleware";
 import { AddFeedback } from "../controller/feedbackController";
@@ -21,5 +22,6 @@ router.post("/feedback", AddFeedback);
 router.get("/notification", sendAllNotification);
 router.post("/notification", TokenVerify, AddNotification);
 router.post("/history", TokenVerify, AddMediaToHistory);
+router.post("/trailer", SearchVideos);
 
 export default router;

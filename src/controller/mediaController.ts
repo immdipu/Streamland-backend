@@ -1,7 +1,8 @@
 import expressAsyncHandler from "express-async-handler";
 import { IRequest } from "../middleware/auth-middleware";
-import { Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 import Media from "../modal/mediaSchema";
+import YouTube from "youtube-sr";
 
 const AddMedia = expressAsyncHandler(
   async (req: IRequest, res: Response, next: NextFunction) => {
@@ -154,4 +155,23 @@ const GetMedia = expressAsyncHandler(
   }
 );
 
-export { AddMedia, RemoveMedia, GetMedia, AddMediaToHistory };
+const SearchVideos = expressAsyncHandler(
+  async (req: IRequest, res: Response, next: NextFunction): Promise<any> => {
+    const { searchTerm } = req.body;
+    if (!searchTerm)
+      return res.status(400).json({ message: "Search term is required" });
+    const Results = await YouTube.search(searchTerm, {
+      limit: 5,
+      type: "video",
+    });
+    if (Results) {
+      res.status(200).json(Results);
+    }
+    if (!Results) {
+      res.status(404);
+      throw new Error("No Results Found");
+    }
+  }
+);
+
+export { AddMedia, RemoveMedia, GetMedia, AddMediaToHistory, SearchVideos };
