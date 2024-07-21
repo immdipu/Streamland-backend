@@ -42,7 +42,9 @@ const server = app.listen(port, () => {
 const io = new Server(server, {
   cors: {
     origin:
-      process.env.NODE_ENV === "production" ? "https://www.showmania.xyz" : "*",
+      process.env.NODE_ENV === "production"
+        ? "https://streamland.vercel.app"
+        : "*",
   },
 });
 
