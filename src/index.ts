@@ -17,7 +17,9 @@ connectDB();
 
 let corOptions = {
   origin:
-    process.env.NODE_ENV === "production" ? "https://www.showmania.xyz" : "*",
+    process.env.NODE_ENV === "production"
+      ? "https://streamland.vercel.app"
+      : "*",
 };
 
 app.use(express.json());
