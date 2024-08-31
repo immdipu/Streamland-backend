@@ -5,7 +5,6 @@ Streamland is a feature-rich movie streaming platform built with modern web tech
 [![GitHub stars](https://img.shields.io/github/stars/immdipu/streamland-backend.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/immdipu/streamland-backend/stargazers/)
 [![GitHub forks](https://img.shields.io/github/forks/immdipu/streamland-backend.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/immdipu/streamland-backend/network/)
 [![GitHub issues](https://img.shields.io/github/issues/immdipu/streamland-backend.svg)](https://GitHub.com/immdipu/streamland-backend/issues/)
-[![GitHub license](https://img.shields.io/github/license/immdipu/streamland-backend.svg)](https://github.com/immdipu/streamland-backend/blob/master/LICENSE)
 
 ## ⚠️ Disclaimer
 
