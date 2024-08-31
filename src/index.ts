@@ -17,9 +17,7 @@ connectDB();
 
 let corOptions = {
   origin:
-    process.env.NODE_ENV === "production"
-      ? "https://streamland.vercel.app"
-      : "*",
+    process.env.NODE_ENV === "production" ? process.env.FRONTEND_URL : "*",
 };
 
 app.use(express.json());
@@ -42,9 +40,7 @@ const server = app.listen(port, () => {
 const io = new Server(server, {
   cors: {
     origin:
-      process.env.NODE_ENV === "production"
-        ? "https://streamland.vercel.app"
-        : "*",
+      process.env.NODE_ENV === "production" ? process.env.FRONTEND_URL : "*",
   },
 });
 
